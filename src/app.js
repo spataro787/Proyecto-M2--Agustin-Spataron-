@@ -4,6 +4,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -41,5 +42,8 @@ app.use('/posts', postRoutes);
 app.get('/', (req, res) => {
   res.json({ message: '✅ API funcionando correctamente' });
 });
+
+// Error handler (debe ser el último)
+app.use(errorHandler);
 
 export default app;
