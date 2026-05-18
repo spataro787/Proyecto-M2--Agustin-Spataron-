@@ -35,7 +35,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Rutas
-app.use('/users', userRoutes);
+app.use('/authors', userRoutes);
 app.use('/posts', postRoutes);
 
 // Health check

@@ -1,11 +1,11 @@
 # MiniBlog API
 
-API REST sencilla para gestionar usuarios y posts, desarrollada con Node.js, Express y PostgreSQL.
+API REST sencilla para gestionar autores y posts, desarrollada con Node.js, Express y PostgreSQL.
 
 ## 📋 Características
 
-- ✅ CRUD completo para usuarios y posts
-- ✅ Relación 1:N entre usuarios y posts
+- ✅ CRUD completo para autores y posts
+- ✅ Relación 1:N entre autores y posts
 - ✅ Validación de datos con express-validator
 - ✅ SQL parametrizado (protegido contra SQL injection)
 - ✅ Tests unitarios con Supertest y Vitest
@@ -76,15 +76,15 @@ npm test
 
 ## 📚 API Endpoints
 
-### Usuarios
+### Autores
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | `/users` | Obtener todos los usuarios |
-| GET | `/users/:id` | Obtener un usuario por ID |
-| POST | `/users` | Crear un nuevo usuario |
-| PUT | `/users/:id` | Actualizar un usuario |
-| DELETE | `/users/:id` | Eliminar un usuario |
+| GET | `/authors` | Obtener todos los autores |
+| GET | `/authors/:id` | Obtener un autor por ID |
+| POST | `/authors` | Crear un nuevo autor |
+| PUT | `/authors/:id` | Actualizar un autor |
+| DELETE | `/authors/:id` | Eliminar un autor |
 
 ### Posts
 
@@ -106,12 +106,13 @@ http://localhost:3000/api-docs
 
 ## 💾 Estructura de BD
 
-### Tabla `users`
+### Tabla `authors`
 ```sql
-CREATE TABLE users (
+CREATE TABLE authors (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
+  bio TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -122,7 +123,8 @@ CREATE TABLE posts (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   content TEXT NOT NULL,
-  author_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  published BOOLEAN DEFAULT FALSE,
+  author_id INT NOT NULL REFERENCES authors(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -130,13 +132,14 @@ CREATE TABLE posts (
 
 ## 🧪 Ejemplos de Requests
 
-### Crear usuario
+### Crear autor
 ```bash
-curl -X POST http://localhost:3000/users \
+curl -X POST http://localhost:3000/authors \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Juan Pérez",
-    "email": "juan@example.com"
+    "email": "juan@example.com",
+    "bio": "Autor de ejemplo"
   }'
 ```
 

@@ -32,9 +32,9 @@ export const getUser = async (req, res) => {
 
 export const createNewUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, bio } = req.body;
 
-    const user = await createUser(name, email);
+    const user = await createUser(name, email, bio || null);
     res.status(201).json(user);
   } catch (error) {
     if (error.code === '23505') {
@@ -47,9 +47,9 @@ export const createNewUser = async (req, res) => {
 export const updateExistingUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email } = req.body;
+    const { name, email, bio } = req.body;
 
-    const user = await updateUser(id, name, email);
+    const user = await updateUser(id, name, email, bio || null);
 
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado' });

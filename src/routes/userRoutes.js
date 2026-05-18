@@ -26,13 +26,13 @@ const handleValidationErrors = (req, res, next) => {
 
 /**
  * @swagger
- * /users:
+ * /authors:
  *   get:
- *     summary: Obtener todos los usuarios
- *     tags: [Users]
+ *     summary: Obtener todos los autores
+ *     tags: [Authors]
  *     responses:
  *       200:
- *         description: Lista de usuarios
+ *         description: Lista de autores
  *         content:
  *           application/json:
  *             schema:
@@ -46,6 +46,8 @@ const handleValidationErrors = (req, res, next) => {
  *                     type: string
  *                   email:
  *                     type: string
+ *                   bio:
+ *                     type: string
  *                   created_at:
  *                     type: string
  */
@@ -53,10 +55,10 @@ router.get('/', getUsers);
 
 /**
  * @swagger
- * /users/{id}:
+ * /authors/{id}:
  *   get:
- *     summary: Obtener un usuario por ID
- *     tags: [Users]
+ *     summary: Obtener un autor por ID
+ *     tags: [Authors]
  *     parameters:
  *       - in: path
  *         name: id
@@ -65,18 +67,18 @@ router.get('/', getUsers);
  *           type: integer
  *     responses:
  *       200:
- *         description: Datos del usuario
+ *         description: Datos del autor
  *       404:
- *         description: Usuario no encontrado
+ *         description: Autor no encontrado
  */
 router.get('/:id', getUser);
 
 /**
  * @swagger
- * /users:
+ * /authors:
  *   post:
- *     summary: Crear un nuevo usuario
- *     tags: [Users]
+ *     summary: Crear un nuevo autor
+ *     tags: [Authors]
  *     requestBody:
  *       required: true
  *       content:
@@ -91,9 +93,11 @@ router.get('/:id', getUser);
  *                 type: string
  *               email:
  *                 type: string
+ *               bio:
+ *                 type: string
  *     responses:
  *       201:
- *         description: Usuario creado exitosamente
+ *         description: Autor creado exitosamente
  *       400:
  *         description: Datos inválidos
  */
@@ -101,10 +105,10 @@ router.post('/', validateUser, handleValidationErrors, createNewUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /authors/{id}:
  *   put:
- *     summary: Actualizar un usuario
- *     tags: [Users]
+ *     summary: Actualizar un autor
+ *     tags: [Authors]
  *     parameters:
  *       - in: path
  *         name: id
@@ -122,20 +126,22 @@ router.post('/', validateUser, handleValidationErrors, createNewUser);
  *                 type: string
  *               email:
  *                 type: string
+ *               bio:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Usuario actualizado
+ *         description: Autor actualizado
  *       404:
- *         description: Usuario no encontrado
+ *         description: Autor no encontrado
  */
 router.put('/:id', validateUser, handleValidationErrors, updateExistingUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /authors/{id}:
  *   delete:
- *     summary: Eliminar un usuario
- *     tags: [Users]
+ *     summary: Eliminar un autor
+ *     tags: [Authors]
  *     parameters:
  *       - in: path
  *         name: id
@@ -144,9 +150,9 @@ router.put('/:id', validateUser, handleValidationErrors, updateExistingUser);
  *           type: integer
  *     responses:
  *       200:
- *         description: Usuario eliminado
+ *         description: Autor eliminado
  *       404:
- *         description: Usuario no encontrado
+ *         description: Autor no encontrado
  */
 router.delete('/:id', deleteExistingUser);
 

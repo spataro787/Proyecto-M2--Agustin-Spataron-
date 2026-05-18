@@ -16,6 +16,7 @@ const validatePost = [
   body('title').trim().notEmpty().withMessage('El título es requerido'),
   body('content').trim().notEmpty().withMessage('El contenido es requerido'),
   body('author_id').isInt().withMessage('author_id debe ser un número entero'),
+  body('published').optional().isBoolean().withMessage('published debe ser booleano'),
 ];
 
 const handleValidationErrors = (req, res, next) => {
@@ -99,6 +100,8 @@ router.get('/author/:authorId', getAuthorPosts);
  *                 type: string
  *               author_id:
  *                 type: integer
+ *               published:
+ *                 type: boolean
  *     responses:
  *       201:
  *         description: Post creado exitosamente
@@ -129,8 +132,8 @@ router.post('/', validatePost, handleValidationErrors, createNewPost);
  *               title:
  *                 type: string
  *               content:
- *                 type: string
- *     responses:
+ *                 type: string *                 published:
+ *                   type: boolean *     responses:
  *       200:
  *         description: Post actualizado
  *       404:
