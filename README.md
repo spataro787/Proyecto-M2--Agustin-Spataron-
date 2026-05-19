@@ -10,6 +10,7 @@ API REST sencilla para gestionar autores y posts, desarrollada con Node.js, Expr
 - ✅ SQL parametrizado (protegido contra SQL injection)
 - ✅ Tests unitarios con Supertest y Vitest
 - ✅ Documentación OpenAPI/Swagger en `/api-docs`
+- ✅ OpenAPI exportada a `docs/openapi.json`
 - ✅ CORS habilitado
 
 ## 🛠️ Tecnologías
@@ -50,6 +51,10 @@ PORT=3000
 NODE_ENV=development
 ```
 
+> Si despliegas a Railway y usas `DATABASE_URL`, `src/db/db.js` ya está preparado para leer esa variable y conectar con SSL.
+>
+> En Railway no necesitas definir `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` y `DB_NAME` si ya configuraste `DATABASE_URL`.
+>
 4. **Inicializa la base de datos:**
 ```bash
 node init-db.js
@@ -102,6 +107,16 @@ npm test
 Accede a la documentación interactiva en:
 ```
 http://localhost:3000/api-docs
+```
+
+También está exportada en:
+```
+docs/openapi.json
+```
+
+Puedes regenerar el OpenAPI JSON con:
+```bash
+npm run generate-docs
 ```
 
 ## 💾 Estructura de BD

@@ -132,8 +132,10 @@ router.post('/', validatePost, handleValidationErrors, createNewPost);
  *               title:
  *                 type: string
  *               content:
- *                 type: string *                 published:
- *                   type: boolean *     responses:
+ *                 type: string
+ *               published:
+ *                 type: boolean
+ *     responses:
  *       200:
  *         description: Post actualizado
  *       404:
