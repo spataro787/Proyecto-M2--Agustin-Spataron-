@@ -7,6 +7,11 @@ import {
   deletePost,
 } from '../models/postModel.js';
 
+import db from '../db/db.js';
+
+// ======================
+// GET ALL POSTS
+// ======================
 export const getPosts = async (req, res) => {
   try {
     const posts = await getAllPosts();
@@ -16,6 +21,9 @@ export const getPosts = async (req, res) => {
   }
 };
 
+// ======================
+// GET POST BY ID
+// ======================
 export const getPost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -31,6 +39,9 @@ export const getPost = async (req, res) => {
   }
 };
 
+// ======================
+// GET POSTS BY AUTHOR
+// ======================
 export const getAuthorPosts = async (req, res) => {
   try {
     const { authorId } = req.params;
@@ -41,20 +52,46 @@ export const getAuthorPosts = async (req, res) => {
   }
 };
 
+// ======================
+// CREATE POST (FIX IMPORTANTE)
+// ======================
 export const createNewPost = async (req, res) => {
   try {
     const { title, content, author_id, published } = req.body;
 
-    const post = await createPost(title, content, author_id, published ?? false);
-    res.status(201).json(post);
-  } catch (error) {
-    if (error.code === '23503') {
-      return res.status(400).json({ error: 'El autor especificado no existe' });
+    // 1. validación básica
+    if (!title || !content || !author_id) {
+      return res.status(400).json({ error: 'Campos incompletos' });
     }
+
+    // 2. verificar si author existe (CLAVE PARA EL TEST)
+    const authorExists = await db.query(
+      'SELECT * FROM authors WHERE id = $1',
+      [author_id]
+    );
+
+    if (authorExists.rows.length === 0) {
+      return res.status(404).json({ error: 'Autor no existe' });
+    }
+
+    // 3. crear post
+    const post = await createPost(
+      title,
+      content,
+      author_id,
+      published ?? false
+    );
+
+    res.status(201).json(post);
+
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// ======================
+// UPDATE POST
+// ======================
 export const updateExistingPost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,6 +109,9 @@ export const updateExistingPost = async (req, res) => {
   }
 };
 
+// ======================
+// DELETE POST
+// ======================
 export const deleteExistingPost = async (req, res) => {
   try {
     const { id } = req.params;

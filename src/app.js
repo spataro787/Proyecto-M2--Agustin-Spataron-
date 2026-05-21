@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // ======================
-// SWAGGER
+// SWAGGER CONFIG
 // ======================
 const swaggerOptions = {
   definition: {
@@ -25,20 +25,30 @@ const swaggerOptions = {
     info: {
       title: "MiniBlog API",
       version: "1.0.0",
-      description: "API REST para gestionar usuarios y posts",
+      description: "API REST para gestionar autores y posts",
     },
     servers: [
       {
-        url: process.env.BASE_URL || "http://localhost:3000",
-        description: "Servidor",
+        url: "http://localhost:3000",
+        description: "Servidor local",
       },
     ],
   },
+
+  // rutas donde swagger busca documentación
   apis: ["./src/routes/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// ======================
+// SWAGGER UI
+// ======================
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 
 // ======================
 // ROUTES
@@ -47,25 +57,30 @@ app.use("/authors", userRoutes);
 app.use("/posts", postRoutes);
 
 // ======================
-// TEST DB
+// TEST DATABASE
 // ======================
 app.get("/test", async (req, res) => {
   try {
     const result = await db.query("SELECT NOW()");
+
     res.json({
       status: "ok",
       dbTime: result.rows[0],
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message,
+    });
   }
 });
 
 // ======================
-// HEALTH CHECK
+// HOME
 // ======================
 app.get("/", (req, res) => {
-  res.json({ message: "✅ API funcionando correctamente" });
+  res.json({
+    message: "✅ API funcionando correctamente",
+  });
 });
 
 // ======================

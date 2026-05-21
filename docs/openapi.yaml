@@ -1,366 +1,227 @@
-{
-  "openapi": "3.0.0",
-  "info": {
-    "title": "MiniBlog API",
-    "version": "1.0.0",
-    "description": "API REST para gestionar usuarios y posts"
-  },
-  "servers": [
-    {
-      "url": "http://localhost:3000",
-      "description": "Servidor local"
-    }
-  ],
-  "paths": {
-    "/posts": {
-      "get": {
-        "summary": "Obtener todos los posts",
-        "tags": [
-          "Posts"
-        ],
-        "responses": {
-          "200": {
-            "description": "Lista de posts"
-          }
-        }
-      },
-      "post": {
-        "summary": "Crear un nuevo post",
-        "tags": [
-          "Posts"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "title",
-                  "content",
-                  "author_id"
-                ],
-                "properties": {
-                  "title": {
-                    "type": "string"
-                  },
-                  "content": {
-                    "type": "string"
-                  },
-                  "author_id": {
-                    "type": "integer"
-                  },
-                  "published": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Post creado exitosamente"
-          },
-          "400": {
-            "description": "Datos inválidos"
-          }
-        }
-      }
-    },
-    "/posts/{id}": {
-      "get": {
-        "summary": "Obtener un post por ID",
-        "tags": [
-          "Posts"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos del post"
-          },
-          "404": {
-            "description": "Post no encontrado"
-          }
-        }
-      },
-      "put": {
-        "summary": "Actualizar un post",
-        "tags": [
-          "Posts"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string"
-                  },
-                  "content": {
-                    "type": "string"
-                  },
-                  "published": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Post actualizado"
-          },
-          "404": {
-            "description": "Post no encontrado"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Eliminar un post",
-        "tags": [
-          "Posts"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Post eliminado"
-          },
-          "404": {
-            "description": "Post no encontrado"
-          }
-        }
-      }
-    },
-    "/posts/author/{authorId}": {
-      "get": {
-        "summary": "Obtener posts de un autor",
-        "tags": [
-          "Posts"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "authorId",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Posts del autor"
-          }
-        }
-      }
-    },
-    "/authors": {
-      "get": {
-        "summary": "Obtener todos los autores",
-        "tags": [
-          "Authors"
-        ],
-        "responses": {
-          "200": {
-            "description": "Lista de autores",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string"
-                      },
-                      "bio": {
-                        "type": "string"
-                      },
-                      "created_at": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Crear un nuevo autor",
-        "tags": [
-          "Authors"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "email"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "bio": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Autor creado exitosamente"
-          },
-          "400": {
-            "description": "Datos inválidos"
-          }
-        }
-      }
-    },
-    "/authors/{id}": {
-      "get": {
-        "summary": "Obtener un autor por ID",
-        "tags": [
-          "Authors"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos del autor"
-          },
-          "404": {
-            "description": "Autor no encontrado"
-          }
-        }
-      },
-      "put": {
-        "summary": "Actualizar un autor",
-        "tags": [
-          "Authors"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "bio": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Autor actualizado"
-          },
-          "404": {
-            "description": "Autor no encontrado"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Eliminar un autor",
-        "tags": [
-          "Authors"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Autor eliminado"
-          },
-          "404": {
-            "description": "Autor no encontrado"
-          }
-        }
-      }
-    }
-  },
-  "components": {},
-  "tags": []
-}
+openapi: 3.0.0
+info:
+  title: MiniBlog API
+  version: 1.0.0
+  description: API REST para gestionar autores y posts
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Authors
+  - name: Posts
+
+components:
+  schemas:
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        bio:
+          type: string
+        created_at:
+          type: string
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+        author_id:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+paths:
+
+  /authors:
+    get:
+      tags: [Authors]
+      summary: Obtener todos los autores
+      responses:
+        "200":
+          description: Lista de autores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+
+    post:
+      tags: [Authors]
+      summary: Crear un autor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                bio:
+                  type: string
+      responses:
+        "201":
+          description: Autor creado
+        "400":
+          description: Error de validación
+
+  /authors/{id}:
+    get:
+      tags: [Authors]
+      summary: Obtener autor por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Autor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+        "404":
+          description: No encontrado
+
+    put:
+      tags: [Authors]
+      summary: Actualizar autor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Author"
+      responses:
+        "200":
+          description: Autor actualizado
+        "404":
+          description: No encontrado
+
+    delete:
+      tags: [Authors]
+      summary: Eliminar autor
+      responses:
+        "200":
+          description: Autor eliminado
+        "404":
+          description: No encontrado
+
+  /posts:
+    get:
+      tags: [Posts]
+      summary: Obtener todos los posts
+      responses:
+        "200":
+          description: Lista de posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+
+    post:
+      tags: [Posts]
+      summary: Crear post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, content, author_id]
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                author_id:
+                  type: integer
+                published:
+                  type: boolean
+      responses:
+        "201":
+          description: Post creado
+        "400":
+          description: Error de validación
+
+  /posts/{id}:
+    get:
+      tags: [Posts]
+      summary: Obtener post por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: No encontrado
+
+    put:
+      tags: [Posts]
+      summary: Actualizar post
+      responses:
+        "200":
+          description: Post actualizado
+        "404":
+          description: No encontrado
+
+    delete:
+      tags: [Posts]
+      summary: Eliminar post
+      responses:
+        "200":
+          description: Post eliminado
+        "404":
+          description: No encontrado
+
+  /posts/author/{authorId}:
+    get:
+      tags: [Posts]
+      summary: Obtener posts por autor
+      parameters:
+        - name: authorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Posts del autor

@@ -1,29 +1,15 @@
-import pg from "pg";
+import pkg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const { Pool } = pg;
+const { Pool } = pkg;
 
-const dbConfig = process.env.DATABASE_URL
-  ? {
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    }
-  : {
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      database: process.env.DB_NAME,
-    };
-
-const db = new Pool(dbConfig);
-
-db.on("error", (err) => {
-  console.error("Error en pool de conexión:", err);
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 export default db;
