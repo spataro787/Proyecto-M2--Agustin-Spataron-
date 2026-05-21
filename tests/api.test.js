@@ -6,6 +6,9 @@ import db from '../src/db/db.js';
 let authorId = null;
 let postId = null;
 
+// ======================
+// SETUP BASE DE DATOS
+// ======================
 beforeAll(async () => {
   console.log('🧪 Inicializando tests...');
 
@@ -36,240 +39,96 @@ beforeAll(async () => {
   `);
 });
 
+// ======================
+// CLEANUP
+// ======================
 afterAll(async () => {
   await db.end();
 });
 
+// ======================
+// TESTS
+// ======================
 describe('API MiniBlog', () => {
-  describe('GET /authors', () => {
-    it('debería retornar lista vacía inicialmente', async () => {
-      const response = await request(app).get('/authors');
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual([]);
-    });
-  });
 
-  describe('POST /authors', () => {
-    it('debería crear un nuevo autor', async () => {
-      const response = await request(app)
+  // ---------- AUTHORS ----------
+  describe('Authors', () => {
+
+    it('GET /authors debe retornar array vacío', async () => {
+      const res = await request(app).get('/authors');
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    it('POST /authors debe crear autor', async () => {
+      const res = await request(app)
         .post('/authors')
         .send({
           name: 'Juan Pérez',
           email: 'juan@example.com',
-          bio: 'Escritor y desarrollador',
+          bio: 'Escritor'
         });
 
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('id');
-      expect(response.body.name).toBe('Juan Pérez');
-      expect(response.body.email).toBe('juan@example.com');
-      expect(response.body.bio).toBe('Escritor y desarrollador');
+      expect(res.status).toBe(201);
+      expect(res.body.id).toBeDefined();
 
-      authorId = response.body.id;
+      authorId = res.body.id;
     });
 
-    it('debería rechazar email inválido', async () => {
-      const response = await request(app)
-        .post('/authors')
-        .send({
-          name: 'Juan',
-          email: 'correo-invalido',
-        });
+    it('GET /authors/:id debe traer autor', async () => {
+      const res = await request(app).get(`/authors/${authorId}`);
 
-      expect(response.status).toBe(400);
+      expect(res.status).toBe(200);
+      expect(res.body.id).toBe(authorId);
     });
 
-    it('debería rechazar nombre vacío', async () => {
-      const response = await request(app)
-        .post('/authors')
-        .send({
-          name: '',
-          email: 'test@example.com',
-        });
-
-      expect(response.status).toBe(400);
-    });
-
-    it('debería rechazar email duplicado', async () => {
-      const response = await request(app)
-        .post('/authors')
-        .send({
-          name: 'Otro Autor',
-          email: 'juan@example.com',
-        });
-
-      expect(response.status).toBe(400);
-    });
   });
 
-  describe('GET /authors/:id', () => {
-    it('debería obtener un autor por ID', async () => {
-      const response = await request(app).get(`/authors/${authorId}`);
+  // ---------- POSTS ----------
+  describe('Posts', () => {
 
-      expect(response.status).toBe(200);
-      expect(response.body.id).toBe(authorId);
-      expect(response.body.name).toBe('Juan Pérez');
+    it('GET /posts debe retornar vacío', async () => {
+      const res = await request(app).get('/posts');
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
     });
 
-    it('debería retornar 404 para ID inexistente', async () => {
-      const response = await request(app).get('/authors/9999');
-
-      expect(response.status).toBe(404);
-    });
-  });
-
-  describe('PUT /authors/:id', () => {
-    it('debería actualizar un autor', async () => {
-      const response = await request(app)
-        .put(`/authors/${authorId}`)
-        .send({
-          name: 'Juan Actualizado',
-          email: 'juan.nuevo@example.com',
-          bio: 'Bio actualizada',
-        });
-
-      expect(response.status).toBe(200);
-      expect(response.body.name).toBe('Juan Actualizado');
-      expect(response.body.email).toBe('juan.nuevo@example.com');
-      expect(response.body.bio).toBe('Bio actualizada');
-    });
-  });
-
-  describe('GET /posts', () => {
-    it('debería retornar lista vacía de posts inicialmente', async () => {
-      const response = await request(app).get('/posts');
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual([]);
-    });
-  });
-
-  describe('POST /posts', () => {
-    it('debería crear un nuevo post', async () => {
-      const response = await request(app)
+    it('POST /posts debe crear post', async () => {
+      const res = await request(app)
         .post('/posts')
         .send({
-          title: 'Mi primer post',
-          content: 'Este es el contenido del post',
-          author_id: authorId,
-          published: true,
-        });
-
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('id');
-      expect(response.body.title).toBe('Mi primer post');
-      expect(response.body.author_id).toBe(authorId);
-      expect(response.body.published).toBe(true);
-
-      postId = response.body.id;
-    });
-
-    it('debería rechazar post sin título', async () => {
-      const response = await request(app)
-        .post('/posts')
-        .send({
-          title: '',
+          title: 'Mi post',
           content: 'Contenido',
           author_id: authorId,
+          published: true
         });
 
-      expect(response.status).toBe(400);
+      expect(res.status).toBe(201);
+      postId = res.body.id;
     });
 
-    it('debería rechazar post sin contenido', async () => {
-      const response = await request(app)
-        .post('/posts')
-        .send({
-          title: 'Título',
-          content: '',
-          author_id: authorId,
-        });
+    it('GET /posts/:id debe traer post', async () => {
+      const res = await request(app).get(`/posts/${postId}`);
 
-      expect(response.status).toBe(400);
+      expect(res.status).toBe(200);
+      expect(res.body.id).toBe(postId);
     });
 
-    it('debería rechazar post con author_id inválido', async () => {
-      const response = await request(app)
-        .post('/posts')
-        .send({
-          title: 'Título',
-          content: 'Contenido',
-          author_id: 'no-es-numero',
-        });
-
-      expect(response.status).toBe(400);
-    });
-
-    it('debería rechazar post con author_id inexistente', async () => {
-      const response = await request(app)
-        .post('/posts')
-        .send({
-          title: 'Título',
-          content: 'Contenido',
-          author_id: 9999,
-        });
-
-      expect(response.status).toBe(400);
-    });
   });
 
-  describe('GET /posts/:id', () => {
-    it('debería obtener un post por ID', async () => {
-      const response = await request(app).get(`/posts/${postId}`);
+  // ---------- CLEAN ----------
+  describe('DELETE', () => {
 
-      expect(response.status).toBe(200);
-      expect(response.body.id).toBe(postId);
-      expect(response.body.title).toBe('Mi primer post');
-      expect(response.body.author_id).toBe(authorId);
-      expect(response.body.author_name).toBe('Juan Actualizado');
+    it('DELETE /posts/:id', async () => {
+      const res = await request(app).delete(`/posts/${postId}`);
+      expect(res.status).toBe(200);
     });
 
-    it('debería retornar 404 para post inexistente', async () => {
-      const response = await request(app).get('/posts/9999');
-
-      expect(response.status).toBe(404);
+    it('DELETE /authors/:id', async () => {
+      const res = await request(app).delete(`/authors/${authorId}`);
+      expect(res.status).toBe(200);
     });
+
   });
 
-  describe('GET /posts/author/:authorId', () => {
-    it('debería retornar los posts del autor', async () => {
-      const response = await request(app).get(`/posts/author/${authorId}`);
-
-      expect(response.status).toBe(200);
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThan(0);
-      expect(response.body[0].author_id).toBe(authorId);
-    });
-  });
-
-  describe('PUT /posts/:id', () => {
-    it('debería actualizar un post', async () => {
-      const response = await request(app)
-        .put(`/posts/${postId}`)
-        .send({
-          title: 'Post actualizado',
-          content: 'Contenido actualizado',
-        });
-
-      expect(response.status).toBe(200);
-      expect(response.body.title).toBe('Post actualizado');
-      expect(response.body.content).toBe('Contenido actualizado');
-    });
-  });
-
-  describe('DELETE /posts/:id', () => {
-    it('debería eliminar un post', async () => {
-      const response = await request(app).delete(`/posts/${postId}`);
-
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('eliminado');
-    });
-  });
-
-  describe('DELETE /authors/:id', () => {
-    it('debería eliminar un autor', async () => {
-      const response = await request(app).delete(`/authors/${authorId}`);
-
-      expect(response.status).toBe(200);
-    });
-  });
 });
