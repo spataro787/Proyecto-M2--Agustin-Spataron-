@@ -1,49 +1,76 @@
-import express from 'express';
-import cors from 'cors';
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
-import userRoutes from './routes/userRoutes.js';
-import postRoutes from './routes/postRoutes.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import express from "express";
+import cors from "cors";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
+import userRoutes from "./routes/userRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import db from "./db/db.js";
 
 const app = express();
 
-// Middlewares
+// ======================
+// MIDDLEWARES
+// ======================
 app.use(cors());
 app.use(express.json());
 
-// Swagger setup
+// ======================
+// SWAGGER
+// ======================
 const swaggerOptions = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'MiniBlog API',
-      version: '1.0.0',
-      description: 'API REST para gestionar usuarios y posts',
+      title: "MiniBlog API",
+      version: "1.0.0",
+      description: "API REST para gestionar usuarios y posts",
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Servidor local',
+        url: process.env.BASE_URL || "http://localhost:3000",
+        description: "Servidor",
       },
     ],
   },
-  apis: ['./src/routes/*.js'],
+  apis: ["./src/routes/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Rutas
-app.use('/authors', userRoutes);
-app.use('/posts', postRoutes);
+// ======================
+// ROUTES
+// ======================
+app.use("/authors", userRoutes);
+app.use("/posts", postRoutes);
 
-// Health check
-app.get('/', (req, res) => {
-  res.json({ message: '✅ API funcionando correctamente' });
+// ======================
+// TEST DB
+// ======================
+app.get("/test", async (req, res) => {
+  try {
+    const result = await db.query("SELECT NOW()");
+    res.json({
+      status: "ok",
+      dbTime: result.rows[0],
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// Error handler (debe ser el último)
+// ======================
+// HEALTH CHECK
+// ======================
+app.get("/", (req, res) => {
+  res.json({ message: "✅ API funcionando correctamente" });
+});
+
+// ======================
+// ERROR HANDLER
+// ======================
 app.use(errorHandler);
 
 export default app;
